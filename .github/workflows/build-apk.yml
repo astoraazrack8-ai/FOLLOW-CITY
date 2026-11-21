@@ -1,0 +1,46 @@
+
+name: Build FOLLOW CITY APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Build FOLLOW CITY
+        run: |
+          unzip -q FOLLOW_CITY_Android_Ready_Source.zip -d game-source
+          cd game-source/follow_city_android_ready
+          npm install
+          npm run build
+          npx cap add android
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: FOLLOW-CITY-APK
+          path: game-source/follow_city_android_ready/android/app/build/outputs/apk/debug/app-debug.apk
