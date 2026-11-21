@@ -24,9 +24,6 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Build FOLLOW CITY
         run: |
           unzip -q FOLLOW_CITY_Android_Ready_Source.zip -d game-source
